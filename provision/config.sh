@@ -1,9 +1,4 @@
 #!/bin/bash
 
-apt-get install -y upstart monit
-
-cp alarm-upstart /etc/init/alarm.conf
-cp alarm-monit /etc/monit/conf.d/alarm
-
-cp ssh-upstart /etc/init/alarm-ssh.conf
-cp ssh-monit /etc/monit/conf.d/alarm-ssh
+wget http://node-arm.herokuapp.com/node_latest_armhf.deb -O /tmp/node_latest_armhf.deb
+dpkg -i /tmp/node_latest_armhf.deb
