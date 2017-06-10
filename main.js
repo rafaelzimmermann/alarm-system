@@ -12,6 +12,7 @@ var rtm = new RtmClient(bot_token, {
 
 var alarmStatus = 'Alarm is off';
 var alarmStatusChannel = credentials.channels.alarmStatus;
+var gpio = require("pi-gpio");
 
 rtm.start();
 
@@ -27,5 +28,13 @@ rtm.on(CLIENT_EVENTS.RTM.RTM_CONNECTION_OPENED, function() {
 rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
   if (message.type === 'message') {
     rtm.sendMessage(alarmStatus, message.channel);
+
+    if (message.text === 'liga') {
+      gpio.open(17, "output", function(err) {		// Open pin 16 for output
+          gpio.write(17, 1, function() {			// Set pin 16 high (1)
+              gpio.close(17);						// Close pin 16
+          });
+      });
+    }
   }
 });

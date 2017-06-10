@@ -9,6 +9,7 @@
   "author": "Rafael Zimmermann",
   "license": "ISC",
   "dependencies": {
-    "@slack/client": "^3.10.0"
+    "@slack/client": "^3.10.0",
+    "pi-gpio": "0.0.8"
   }
 }
