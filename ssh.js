@@ -4,7 +4,7 @@ var RtmClient = require('@slack/client').RtmClient;
 var MemoryDataStore = require('@slack/client').MemoryDataStore;
 var CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS;
 var RTM_EVENTS = require('@slack/client').RTM_EVENTS;
-var bot_token = process.env.SLACK_BOT_TOKEN || credentials.client.ssh;
+var bot_token = process.env.SLACK_BOT_TOKEN || credentials.clients.ssh;
 var currentDirectory = '/tmp';
 
 var rtm = new RtmClient(bot_token, {
