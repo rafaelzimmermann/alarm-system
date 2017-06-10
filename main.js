@@ -30,9 +30,9 @@ rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
     rtm.sendMessage(alarmStatus, message.channel);
 
     if (message.text === 'liga') {
-      gpio.open(0, "output", function(err) {		// Open pin 16 for output
-          gpio.write(0, 1, function() {			// Set pin 16 high (1)
-              gpio.close(0);						// Close pin 16
+      gpio.open(16, "output", function(err) {		// Open pin 16 for output
+          gpio.write(16, 1, function() {			// Set pin 16 high (1)
+              gpio.close(16);						// Close pin 16
           });
       });
     }
