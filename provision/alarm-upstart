@@ -9,7 +9,7 @@ script
     export HOME="/root"
 
     echo $$ > /var/run/alarm.pid
-    exec sudo -u pi /usr/local/bin/node /home/pi/workspace/alarm-system/main.js >> /var/log/alarm.log 2>&1
+    exec sudo /usr/local/bin/node /home/pi/workspace/alarm-system/main.js >> /var/log/alarm.log 2>&1
 end script
 
 pre-start script
