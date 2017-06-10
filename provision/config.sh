@@ -3,4 +3,4 @@
 apt-get install -y upstart monit
 
 cp alarm-upstart /etc/init/alarm.conf
-cp alarm-monit
+cp alarm-monit /etc/monit/conf.d/alarm
