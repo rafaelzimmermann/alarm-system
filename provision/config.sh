@@ -4,3 +4,4 @@
 # dpkg -i /tmp/node_latest_armhf.deb
 
 cp alarm.service /etc/systemd/system/alarm.service
+cp alarm-ssh.service /etc/systemd/system/alarm-ssh.service
