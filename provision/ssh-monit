@@ -1,6 +1,0 @@
-#!monit
-set logfile /var/log/monit.log
-
-check process nodejs with pidfile "/var/run/alarm-ssh.pid"
-    start program = "/sbin/start alarm-ssh"
-    stop program  = "/sbin/stop alarm-ssh"
