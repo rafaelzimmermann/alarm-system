@@ -13,7 +13,8 @@ var writePulse = function(pin, duration) {
   return new Promise((resolve, reject) => {
       gpio.write(pin, LOW, function() {
           setTimeout(function() {
-            gpio.write(pin, HIGH, resolve);
+            gpio.write(pin, HIGH);
+            resolve();
           }, duration);
       });
   });
