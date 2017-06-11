@@ -11,8 +11,12 @@ const HIGH = 1;
 const OTHER_PINS = [13, 15, 16, 18, 22, 7];
 const RELE_POSITION = ['3', '4', '5', '6', '7', '8'];
 
-gpio.open(CONTROL_PIN, "output");
-gpio.open(LIGHT_PIN, "output");
+gpio.open(CONTROL_PIN, "output", function() {
+  gpio.write(CONTROL_PIN, HIGH);
+});
+gpio.open(LIGHT_PIN, "output", function() {
+  gpio.write(LIGHT_PIN, HIGH);
+});
 gpio.open(SIREN_INPUT_PIN, "input");
 gpio.open(ALARM_ON_PIN, "input");
 
