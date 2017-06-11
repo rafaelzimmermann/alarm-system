@@ -8,6 +8,7 @@ const LOW = 0;
 const HIGH = 1;
 
 gpio.open(CONTROL_PIN, "output");
+gpio.open(INPUT_PIN, "input");
 
 var writePulse = function(pin, duration) {
   return new Promise((resolve, reject) => {
@@ -57,10 +58,24 @@ var isOn = function() {
   return new Promise((resolve, reject) => {
     resolve(alarmOn ? 'Alarme ligado' : 'Alarme desligado');
   });
+};
+
+var onStateChange = function(callback) {
+  var status = 0;
+  setInterval(() => {
+    gpio.read(INPUT_PIN, function(err, value) {
+      if (!err && status != value) {
+        status = value;
+        callback(status == 1 ? 'HIGH', 'LOW');
+      }
+    });
+  }, 100);
+
 }
 
 module.exports = {
   turnOn: turnOn,
   turnOff: turnOff,
-  isOn: isOn
+  isOn: isOn,
+  onStateChange: onStateChange
 }

@@ -26,6 +26,10 @@ rtm.on(CLIENT_EVENTS.RTM.RTM_CONNECTION_OPENED, function() {
   rtm.sendMessage('Hello! I just wake up.', alarmStatusChannel);
 });
 
+alarm.onStateChange(function(val) {
+  rtm.sendMessage('PIN 26 changed state to ' + val, alarmStatusChannel);
+});
+
 const commands = {
   'liga': alarm.turnOn,
   'desliga': alarm.turnOff,
