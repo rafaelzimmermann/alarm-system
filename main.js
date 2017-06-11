@@ -26,8 +26,20 @@ rtm.on(CLIENT_EVENTS.RTM.RTM_CONNECTION_OPENED, function() {
   rtm.sendMessage('Hello! I just wake up.', alarmStatusChannel);
 });
 
-alarm.onStateChange(function(val) {
-  rtm.sendMessage('PIN 26 changed state to ' + val, alarmStatusChannel);
+alarm.onSirenStateChange(function(val) {
+  if (val == 1) {
+    rtm.sendMessage(':rotating_light: Alarme está tocando!', alarmStatusChannel);
+  } else {
+    rtm.sendMessage(':warning: Alarme não está mais tocando!', alarmStatusChannel);
+  }
+});
+
+alarm.onAlarmChange(function(val) {
+  if (val == 1) {
+    rtm.sendMessage('O Alarme foi ligado.', alarmStatusChannel);
+  } else {
+    rtm.sendMessage('O Alarme foi desligado.', alarmStatusChannel);
+  }
 });
 
 const commands = {
