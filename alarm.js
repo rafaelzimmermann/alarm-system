@@ -99,13 +99,17 @@ var turnOffLight = function() {
 
 var turnOnPin = function(rele) {
   return new Promise((resolve, reject) => {
-    gpio.write(OTHER_PINS[RELE_POSITION.indexOf(rele)], LOW, resolve);
+    if (RELE_POSITION.indexOf(rele) >= 0) {
+      gpio.write(OTHER_PINS[RELE_POSITION.indexOf(rele)], LOW, resolve);
+    }
   });
 };
 
 var turnOffPin = function(rele) {
   return new Promise((resolve, reject) => {
-    gpio.write(OTHER_PINS[RELE_POSITION.indexOf(rele)], HIGH, resolve);
+    if (RELE_POSITION.indexOf(rele) >= 0) {
+      gpio.write(OTHER_PINS[RELE_POSITION.indexOf(rele)], HIGH, resolve);
+    }
   });
 };
 
