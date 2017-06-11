@@ -9,6 +9,7 @@ const PULSE_DURATION = 1000;
 const LOW = 0;
 const HIGH = 1;
 const OTHER_PINS = [13, 15, 16, 18, 22, 7];
+const RELE_POSITION = ['3', '4', '5', '6', '7', '8'];
 
 gpio.open(CONTROL_PIN, "output");
 gpio.open(LIGHT_PIN, "output");
@@ -16,7 +17,9 @@ gpio.open(SIREN_INPUT_PIN, "input");
 gpio.open(ALARM_ON_PIN, "input");
 
 OTHER_PINS.forEach(function(pin) {
-  gpio.open(pin, "output");
+  gpio.open(pin, "output", function() {
+    gpio.write(pin, HIGH);
+  });
 });
 
 var writePulse = function(pin, duration) {
@@ -94,6 +97,18 @@ var turnOffLight = function() {
   });
 };
 
+var turnOnPin = function(rele) {
+  return new Promise((resolve, reject) => {
+    gpio.write(OTHER_PINS[RELE_POSITION.indexOf(rele)], LOW, resolve);
+  });
+};
+
+var turnOffPin = function(rele) {
+  return new Promise((resolve, reject) => {
+    gpio.write(OTHER_PINS[RELE_POSITION.indexOf(rele)], HIGH, resolve);
+  });
+};
+
 onStateChange(ALARM_ON_PIN)(function(val) {
   alarmOn = val == 1;
 });
@@ -103,6 +118,8 @@ module.exports = {
   turnOff: turnOff,
   turnOnLight: turnOnLight,
   turnOffLight: turnOffLight,
+  turnOnPin: turnOnPin,
+  turnOffPin: turnOffPin,
   isOn: isOn,
   onSirenStateChange: onStateChange(SIREN_INPUT_PIN),
   onAlarmChange: onStateChange(ALARM_ON_PIN)

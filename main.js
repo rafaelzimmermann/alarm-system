@@ -63,6 +63,12 @@ rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
         .catch((err) => {
           rtm.sendMessage(err, message.channel);
         });
+    } else if (command.startsWith('liga porta ')) {
+      var rele = command.replace('liga porta ', '');
+      alarm.turnOnPin(rele);
+    } else if (command.startsWith('desliga porta ')) {
+      var rele = command.replace('desliga porta ', '');
+      alarm.turnOffPin(rele);
     }
   }
 });
