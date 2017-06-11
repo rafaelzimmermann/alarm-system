@@ -34,8 +34,9 @@ const commands = {
 
 rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
   if (message.type === 'message') {
-    if (commands.hasOwnProperty(message.text)) {
-      commands[message.text]()
+    var command = message.text.toLowerCase();
+    if (commands.hasOwnProperty(command)) {
+      commands[command]()
         .then((message) => {
           rtm.sendMessage(message, message.channel);
         })

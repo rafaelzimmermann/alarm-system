@@ -3,19 +3,20 @@ var gpio = require("pi-gpio");
 var alarmOn = false;
 const CONTROL_PIN = 11;
 const PULSE_DURATION = 1000;
+const LOW = 0;
 
 var writePulse = function(pin, duration) {
   return new Promise((resolve, reject) => {
-    gpio.open(11, "output", function(err) {		// Open pin 11 for output
+    gpio.open(pin, "output", function(err) {
         if (err) {
           reject(err);
           return;
         }
-        gpio.write(11, 0, function() {			// Set pin 11 high (1)
+        gpio.write(pin, LOW, function() {
             setTimeout(function() {
-              gpio.close(11);
+              gpio.close(pin);
               resolve();
-            }, 1000);						// Close pin 16
+            }, duration);
         });
     });
   });
