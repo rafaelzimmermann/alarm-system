@@ -2,8 +2,10 @@ var gpio = require("pi-gpio");
 
 var alarmOn = false;
 const CONTROL_PIN = 11;
+const INPUT_PIN = 26;
 const PULSE_DURATION = 1000;
 const LOW = 0;
+const HIGH = 1;
 
 var writePulse = function(pin, duration) {
   return new Promise((resolve, reject) => {
@@ -14,8 +16,7 @@ var writePulse = function(pin, duration) {
         }
         gpio.write(pin, LOW, function() {
             setTimeout(function() {
-              gpio.close(pin);
-              resolve();
+              gpio.write(pin, HIGH, resolve);
             }, duration);
         });
     });
