@@ -62,14 +62,14 @@ var isOn = function() {
 
 var onStateChange = function(callback) {
   var status = 0;
-  setInterval(() => {
+  setInterval(function() {
     gpio.read(INPUT_PIN, function(err, value) {
       if (!err && status != value) {
         status = value;
-        callback(status == 1 ? 'HIGH', 'LOW');
+        callback(status == 1 ? 'HIGH' : 'LOW');
       }
     });
-  }, 100);
+  }, 1000);
 
 }
 
