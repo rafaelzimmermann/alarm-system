@@ -78,11 +78,15 @@ var onStateChange = function(pin) {
 };
 
 var turnOnLight = function() {
-  gpio.write(LIGHT_PIN, HIGH);
+  return new Promise((resolve, reject) => {
+    gpio.write(LIGHT_PIN, HIGH, resolve);
+  });
 };
 
 var turnOffLight = function() {
-  gpio.write(LIGHT_PIN, LOW);
+  return new Promise((resolve, reject) => {
+    gpio.write(LIGHT_PIN, LOW, resolve);
+  });
 };
 
 onStateChange(ALARM_ON_PIN)(function(val) {

@@ -48,7 +48,7 @@ const commands = {
   'liga luz': alarm.turnOnLight,
   'desliga luz': alarm.turnOffLight,
   '?': alarm.isOn
-}
+};
 
 rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
   if (message.type === 'message') {
@@ -56,7 +56,9 @@ rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
     if (commands.hasOwnProperty(command)) {
       commands[command]()
         .then((msg) => {
-          rtm.sendMessage(msg, message.channel);
+          if (msg) {
+            rtm.sendMessage(msg, message.channel);
+          }
         })
         .catch((err) => {
           rtm.sendMessage(err, message.channel);
