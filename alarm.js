@@ -8,11 +8,16 @@ const ALARM_ON_PIN = 24;
 const PULSE_DURATION = 1000;
 const LOW = 0;
 const HIGH = 1;
+const OTHER_PINS = [13, 15, 16, 18, 22, 7];
 
 gpio.open(CONTROL_PIN, "output");
 gpio.open(LIGHT_PIN, "output");
 gpio.open(SIREN_INPUT_PIN, "input");
 gpio.open(ALARM_ON_PIN, "input");
+
+OTHER_PINS.forEach(function(pin) {
+  gpio.open(pin, "output");
+});
 
 var writePulse = function(pin, duration) {
   return new Promise((resolve, reject) => {
