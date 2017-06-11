@@ -35,7 +35,7 @@ var turnOn = function() {
       resolve('Alarme ligado');
     })
     .catch((err) => {
-      reject(err);
+      reject('Error: ' + err);
     });
   });
 };
@@ -51,7 +51,7 @@ var turnOff = function() {
       resolve('Alarme desligado');
     })
     .catch((err) => {
-      reject(err);
+      reject('Error: ' + err);
     });
   });
 };
