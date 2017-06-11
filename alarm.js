@@ -11,10 +11,6 @@ gpio.open(CONTROL_PIN, "output");
 
 var writePulse = function(pin, duration) {
   return new Promise((resolve, reject) => {
-      if (err) {
-        reject(err);
-        return;
-      }
       gpio.write(pin, LOW, function() {
           setTimeout(function() {
             gpio.write(pin, HIGH, resolve);
