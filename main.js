@@ -34,10 +34,14 @@ const commands = {
 
 rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
   if (message.type === 'message') {
-    rtm.sendMessage(alarmStatus, message.channel);
-
     if (commands.hasOwnProperty(message.text)) {
-      commands[message.text]();
+      commands[message.text]()
+        .then((message) => {
+          rtm.sendMessage(message, message.channel);
+        })
+        .catch((err) => {
+          rtm.sendMessage(err, message.channel);
+        });
     }
   }
 });

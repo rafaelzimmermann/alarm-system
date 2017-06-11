@@ -30,7 +30,7 @@ var turnOn = function() {
     }
     writePulse(CONTROL_PIN, PULSE_DURATION).then(() => {
       alarmOn = true;
-      resolve();
+      resolve('Alarme ligado');
     })
     .catch((err) => {
       reject(err);
@@ -46,7 +46,7 @@ var turnOff = function() {
     }
     writePulse(CONTROL_PIN, PULSE_DURATION).then(() => {
       alarmOn = false;
-      resolve();
+      resolve('Alarme desligado');
     })
     .catch((err) => {
       reject(err);
@@ -55,7 +55,9 @@ var turnOff = function() {
 };
 
 var isOn = function() {
-  return alarmOn;
+  return new Promise((resolve, reject) => {
+    resolve(alarmOn ? 'Alarme ligado' : 'Alarme desligado');
+  });
 }
 
 module.exports = {
