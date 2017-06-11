@@ -43,8 +43,10 @@ alarm.onAlarmChange(function(val) {
 });
 
 const commands = {
-  'liga': alarm.turnOn,
-  'desliga': alarm.turnOff,
+  'liga alarme': alarm.turnOn,
+  'desliga alarme': alarm.turnOff,
+  'liga luz': alarm.turnOnLight,
+  'desliga luz': alarm.turnOffLight,
   '?': alarm.isOn
 }
 

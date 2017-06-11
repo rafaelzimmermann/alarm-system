@@ -2,6 +2,7 @@ var gpio = require("pi-gpio");
 
 var alarmOn = false;
 const CONTROL_PIN = 11;
+const LIGHT_PIN = 12;
 const SIREN_INPUT_PIN = 26;
 const ALARM_ON_PIN = 24;
 const PULSE_DURATION = 1000;
@@ -9,6 +10,7 @@ const LOW = 0;
 const HIGH = 1;
 
 gpio.open(CONTROL_PIN, "output");
+gpio.open(LIGHT_PIN, "output");
 gpio.open(SIREN_INPUT_PIN, "input");
 gpio.open(ALARM_ON_PIN, "input");
 
@@ -22,7 +24,6 @@ var writePulse = function(pin, duration) {
       });
   });
 };
-
 
 var turnOn = function() {
   return new Promise((resolve, reject) => {
@@ -76,6 +77,14 @@ var onStateChange = function(pin) {
   }
 };
 
+var turnOnLight = function() {
+  gpio.write(LIGHT_PIN, HIGH);
+};
+
+var turnOffLight = function() {
+  gpio.write(LIGHT_PIN, LOW);
+};
+
 onStateChange(ALARM_ON_PIN)(function(val) {
   alarmOn = val == 1;
 });
@@ -83,6 +92,8 @@ onStateChange(ALARM_ON_PIN)(function(val) {
 module.exports = {
   turnOn: turnOn,
   turnOff: turnOff,
+  turnOnLight: turnOnLight,
+  turnOffLight: turnOffLight,
   isOn: isOn,
   onSirenStateChange: onStateChange(SIREN_INPUT_PIN),
   onAlarmChange: onStateChange(ALARM_ON_PIN)
