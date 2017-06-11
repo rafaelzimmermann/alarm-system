@@ -66,7 +66,7 @@ var onStateChange = function(pin) {
   return function(callback) {
     var status = 0;
     setInterval(function() {
-      gpio.read(SIREN_INPUT_PIN, function(err, value) {
+      gpio.read(pin, function(err, value) {
         if (!err && status != value) {
           status = value;
           callback(status);
