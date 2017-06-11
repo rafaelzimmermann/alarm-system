@@ -7,19 +7,19 @@ const PULSE_DURATION = 1000;
 const LOW = 0;
 const HIGH = 1;
 
+gpio.open(CONTROL_PIN, "output");
+
 var writePulse = function(pin, duration) {
   return new Promise((resolve, reject) => {
-    gpio.open(pin, "output", function(err) {
-        if (err) {
-          reject(err);
-          return;
-        }
-        gpio.write(pin, LOW, function() {
-            setTimeout(function() {
-              gpio.write(pin, HIGH, resolve);
-            }, duration);
-        });
-    });
+      if (err) {
+        reject(err);
+        return;
+      }
+      gpio.write(pin, LOW, function() {
+          setTimeout(function() {
+            gpio.write(pin, HIGH, resolve);
+          }, duration);
+      });
   });
 };
 
