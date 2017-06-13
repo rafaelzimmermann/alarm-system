@@ -47,7 +47,7 @@ const commands = {
   'desliga luz': alarm.turnOffLight,
   '?': alarm.isOn,
   'exit': process.exit,
-  'help': function() {return new Promise(resolve, reject) => { reolve(Object.keys(commands).join('\n'))}},
+  'help': function() {return new Promise(resolve, reject) => { resolve(Object.keys(commands).join('\n'))}},
   'reboot': function() { return new Promise((resolve, reject) => { exec('sudo shutdown -r now'); resolve('Reiniciando...')}},
   'halt': function() { return new Promise((resolve, reject) => { exec('sudo shutdown -r now'); resolve('Desligando...')}}
 };
