@@ -11,10 +11,9 @@ const HIGH = true;
 const OTHER_PINS = [13, 15, 16, 18, 22, 7];
 const RELE_POSITION = ['3', '4', '5', '6', '7', '8'];
 
-var pinChangeHandlers = {
-  ALARM_STATE_PIN: [],
-  SIREN_STATE_PIN: []
-};
+var pinChangeHandlers = {};
+pinChangeHandlers[ALARM_STATE_PIN]= [];
+pinChangeHandlers[SIREN_STATE_PIN]= [];
 
 gpio.setup(CONTROL_PIN, gpio.DIR_HIGH);
 gpio.setup(LIGHT_PIN, gpio.DIR_HIGH);
