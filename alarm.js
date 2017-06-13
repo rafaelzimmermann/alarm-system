@@ -1,30 +1,40 @@
-var gpio = require("pi-gpio");
+var gpio = require('rpi-gpio');
 
 var alarmOn = false;
 const CONTROL_PIN = 11;
 const LIGHT_PIN = 12;
-const SIREN_INPUT_PIN = 26;
-const ALARM_ON_PIN = 24;
+const SIREN_STATE_PIN = 26;
+const ALARM_STATE_PIN = 24;
 const PULSE_DURATION = 1000;
-const LOW = 0;
-const HIGH = 1;
+const LOW = false;
+const HIGH = true;
 const OTHER_PINS = [13, 15, 16, 18, 22, 7];
 const RELE_POSITION = ['3', '4', '5', '6', '7', '8'];
 
-gpio.open(CONTROL_PIN, "output", function() {
-  gpio.write(CONTROL_PIN, HIGH);
+var pinChangeHandlers = {
+  ALARM_STATE_PIN: [],
+  SIREN_STATE_PIN: []
+};
+
+gpio.setup(CONTROL_PIN, gpio.DIR_HIGH);
+gpio.setup(LIGHT_PIN, gpio.DIR_HIGH);
+
+gpio.on('change', function(pin, value) {
+    pinChangeHandlers.forEach((handler) => {
+      handler(value);
+    });
 });
-gpio.open(LIGHT_PIN, "output", function() {
-  gpio.write(LIGHT_PIN, HIGH);
-});
-gpio.open(SIREN_INPUT_PIN, "input");
-gpio.open(ALARM_ON_PIN, "input");
+
+gpio.setup(SIREN_STATE_PIN, gpio.DIR_IN, gpio.EDGE_BOTH);
+gpio.setup(ALARM_STATE_PIN, gpio.DIR_IN, gpio.EDGE_BOTH);
 
 OTHER_PINS.forEach(function(pin) {
-  gpio.open(pin, "output", function() {
-    gpio.write(pin, HIGH);
-  });
+  gpio.setup(pin, gpio.DIR_HIGH);
 });
+
+var registerChangeHandler = function(pin, callback) {
+  pinChangeHandlers[pin].push(callback);
+};
 
 var writePulse = function(pin, duration) {
   return new Promise((resolve, reject) => {
@@ -75,20 +85,6 @@ var isOn = function() {
   });
 };
 
-var onStateChange = function(pin) {
-  return function(callback) {
-    var status = 0;
-    setInterval(function() {
-      gpio.read(pin, function(err, value) {
-        if (!err && status != value) {
-          status = value;
-          callback(status);
-        }
-      });
-    }, 1000);
-  }
-};
-
 var turnOnLight = function() {
   return new Promise((resolve, reject) => {
     gpio.write(LIGHT_PIN, LOW, resolve);
@@ -117,8 +113,8 @@ var turnOffPin = function(rele) {
   });
 };
 
-onStateChange(ALARM_ON_PIN)(function(val) {
-  alarmOn = val == 1;
+registerChangeHandler(ALARM_STATE_PIN, function(val) {
+  alarmOn = val;
 });
 
 module.exports = {
@@ -129,6 +125,6 @@ module.exports = {
   turnOnPin: turnOnPin,
   turnOffPin: turnOffPin,
   isOn: isOn,
-  onSirenStateChange: onStateChange(SIREN_INPUT_PIN),
-  onAlarmChange: onStateChange(ALARM_ON_PIN)
+  onSirenStateChange: function(callback) { registerChangeHandler(SIREN_STATE_PIN, callback); },
+  onAlarmChange: function(callback) { registerChangeHandler(ALARM_STATE_PIN, callback); }
 }
