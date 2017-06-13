@@ -19,9 +19,7 @@ gpio.setup(CONTROL_PIN, gpio.DIR_HIGH);
 gpio.setup(LIGHT_PIN, gpio.DIR_HIGH);
 
 gpio.on('change', function(pin, value) {
-  console.log(pin);
-  console.log(pinChangeHandlers[pin])  
-  pinChangeHandlers.forEach((handler) => {
+  pinChangeHandlers[pin].forEach((handler) => {
     handler(value);
   });
 });
