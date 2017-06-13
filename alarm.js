@@ -19,9 +19,11 @@ gpio.setup(CONTROL_PIN, gpio.DIR_HIGH);
 gpio.setup(LIGHT_PIN, gpio.DIR_HIGH);
 
 gpio.on('change', function(pin, value) {
-    pinChangeHandlers.forEach((handler) => {
-      handler(value);
-    });
+  console.log(pin);
+  console.log(pinChangeHandlers[pin])  
+  pinChangeHandlers.forEach((handler) => {
+    handler(value);
+  });
 });
 
 gpio.setup(SIREN_STATE_PIN, gpio.DIR_IN, gpio.EDGE_BOTH);
