@@ -5,6 +5,7 @@ var RTM_EVENTS = require('@slack/client').RTM_EVENTS;
 
 const credentials = require('./credentials');
 var alarm = require('./alarm');
+var started = false;
 
 var bot_token = process.env.SLACK_BOT_TOKEN || credentials.clients.alarm;
 var rtm = new RtmClient(bot_token, {
@@ -12,30 +13,27 @@ var rtm = new RtmClient(bot_token, {
   dataStore: new MemoryDataStore()
 });
 
-var alarmStatus = 'Alarm is off';
 var alarmStatusChannel = credentials.channels.alarmStatus;
 
 rtm.start();
 
 rtm.on(CLIENT_EVENTS.RTM.RTM_CONNECTION_OPENED, function() {
-  var user = rtm.dataStore.getUserById(rtm.activeUserId);
-
-  var team = rtm.dataStore.getTeamById(rtm.activeTeamId);
-
-  console.log('Connected to ' + team.name + ' as ' + user.name);
-  rtm.sendMessage('Hello! I just wake up.', alarmStatusChannel);
+  if (!started) {
+    rtm.sendMessage('Olá! Estou de volta.', alarmStatusChannel);
+    started = true;
+  }
 });
 
-alarm.onSirenStateChange(function(val) {
-  if (val == 1) {
+alarm.onSirenStateChange(function(isSirenOn) {
+  if (isSirenOn) {
     rtm.sendMessage(':rotating_light: Alarme está tocando!', alarmStatusChannel);
   } else {
     rtm.sendMessage(':warning: Alarme não está mais tocando!', alarmStatusChannel);
   }
 });
 
-alarm.onAlarmChange(function(val) {
-  if (val == 1) {
+alarm.onAlarmChange(function(isAlarmOn) {
+  if (isAlarmOn) {
     rtm.sendMessage('O Alarme foi ligado.', alarmStatusChannel);
   } else {
     rtm.sendMessage('O Alarme foi desligado.', alarmStatusChannel);
