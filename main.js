@@ -45,7 +45,8 @@ const commands = {
   'desliga alarme': alarm.turnOff,
   'liga luz': alarm.turnOnLight,
   'desliga luz': alarm.turnOffLight,
-  '?': alarm.isOn
+  '?': alarm.isOn,
+  'exit': process.exit
 };
 
 rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
