@@ -26,9 +26,9 @@ rtm.on(CLIENT_EVENTS.RTM.RTM_CONNECTION_OPENED, function() {
 
 alarm.onSirenStateChange(function(isSirenOn) {
   if (isSirenOn) {
-    rtm.sendMessage(':rotating_light: Alarme está tocando!', alarmStatusChannel);
+    rtm.sendMessage('@channel :rotating_light: Alarme está tocando!', alarmStatusChannel);
   } else {
-    rtm.sendMessage(':warning: Alarme não está mais tocando!', alarmStatusChannel);
+    rtm.sendMessage('@channel :warning: Alarme não está mais tocando!', alarmStatusChannel);
   }
 });
 
