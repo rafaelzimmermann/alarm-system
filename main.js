@@ -46,24 +46,7 @@ const commands = {
   'liga luz': alarm.turnOnLight,
   'desliga luz': alarm.turnOffLight,
   '?': alarm.isOn,
-  'exit': process.exit,
-  'help': function() {
-    return new Promise((resolve, reject) => {
-       resolve(Object.keys(commands).join('\n'));
-     });
-  },
-  'reboot': function() {
-     return new Promise((resolve, reject) => {
-       exec('sudo shutdown -r now');
-       resolve('Reiniciando...');
-     });
-  },
-  'halt': function() {
-    return new Promise((resolve, reject) => {
-      exec('sudo shutdown -r now');
-      resolve('Desligando...');
-    });
-  }
+  'exit': process.exit
 };
 
 rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
