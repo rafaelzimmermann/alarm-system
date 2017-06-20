@@ -6,5 +6,5 @@
 # cp alarm.service /etc/systemd/system/alarm.service
 # cp alarm-ssh.service /etc/systemd/system/alarm-ssh.service
 
-chmod u+x update-alarm-system
-cp update-alarm-system /usr/bin
+chmod u+x update-alarm-system.sh
+cp update-alarm-system.sh /usr/bin
