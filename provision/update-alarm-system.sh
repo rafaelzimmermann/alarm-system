@@ -6,4 +6,6 @@ cd /home/pi/workspace/alarm-system; git pull --dry-run | grep -q -v 'Already up-
 if [ $changed -eq 1 ]; then
   cd /home/pi/workspace/alarm-system; git pull
   service alarm restart
+else
+  echo "The system is up to date."
 fi
