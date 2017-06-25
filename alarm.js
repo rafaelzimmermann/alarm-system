@@ -15,17 +15,30 @@ var pinChangeHandlers = {};
 pinChangeHandlers[ALARM_STATE_PIN]= [];
 pinChangeHandlers[SIREN_STATE_PIN]= [];
 
+var pinState = {};
+
 gpio.setup(CONTROL_PIN, gpio.DIR_HIGH);
 gpio.setup(LIGHT_PIN, gpio.DIR_HIGH);
 
-gpio.on('change', function(pin, value) {
+var onChange = function(pin, value) {
   pinChangeHandlers[pin].forEach((handler) => {
     handler(value);
   });
-});
+};
 
-gpio.setup(SIREN_STATE_PIN, gpio.DIR_IN, gpio.EDGE_BOTH);
-gpio.setup(ALARM_STATE_PIN, gpio.DIR_IN, gpio.EDGE_BOTH);
+gpio.setup(SIREN_STATE_PIN, gpio.DIR_IN);
+gpio.setup(ALARM_STATE_PIN, gpio.DIR_IN);
+
+setInterval(function() {
+  [ALARM_STATE_PIN, SIREN_STATE_PIN].forEach(function(pin) {
+    gpio.read(pin, function(err, value) {
+      if (!err && !pinState.hasOwnProperty(pin) && pinState[pin] != value) {
+        onChange(pin, value);
+      }
+      pinState[pin] = value;
+    }
+  });
+}, 1000);
 
 OTHER_PINS.forEach(function(pin) {
   gpio.setup(pin, gpio.DIR_HIGH);
