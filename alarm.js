@@ -74,7 +74,7 @@ var writePulse = function(pin, duration) {
 
 var turnOn = function() {
   return new Promise((resolve, reject) => {
-    if (pinState(ALARM_STATE_PIN)) {
+    if (pinState[ALARM_STATE_PIN]) {
       reject('O alarme já está ligado!');
       return;
     }
@@ -89,7 +89,7 @@ var turnOn = function() {
 
 var turnOff = function() {
   return new Promise((resolve, reject) => {
-    if (!pinState(ALARM_STATE_PIN)) {
+    if (!pinState[ALARM_STATE_PIN]) {
       reject('O alarme já está desligado!');
       return;
     }
@@ -104,7 +104,7 @@ var turnOff = function() {
 
 var isOn = function() {
   return new Promise((resolve, reject) => {
-    resolve(pinState(ALARM_STATE_PIN) ? 'Alarme ligado' : 'Alarme desligado');
+    resolve(pinState[ALARM_STATE_PIN] ? 'Alarme ligado' : 'Alarme desligado');
   });
 };
 
