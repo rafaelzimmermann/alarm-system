@@ -26,19 +26,29 @@ var onChange = function(pin, value) {
   });
 };
 
-gpio.setup(SIREN_STATE_PIN, gpio.DIR_IN);
-gpio.setup(ALARM_STATE_PIN, gpio.DIR_IN);
-
-setInterval(function() {
-  [ALARM_STATE_PIN, SIREN_STATE_PIN].forEach(function(pin) {
-    gpio.read(pin, function(err, value) {
+gpio.setup(SIREN_STATE_PIN, gpio.DIR_IN, function() {
+  setInterval(function() {
+    gpio.read(SIREN_STATE_PIN, function(err, value) {
       if (!err && !pinState.hasOwnProperty(pin) && pinState[pin] != value) {
         onChange(pin, value);
       }
       pinState[pin] = value;
     });
-  });
-}, 1000);
+  }, 1000);
+});
+
+gpio.setup(ALARM_STATE_PIN, gpio.DIR_IN, function() {
+  setInterval(function() {
+    gpio.read(ALARM_STATE_PIN, function(err, value) {
+      if (!err && !pinState.hasOwnProperty(pin) && pinState[pin] != value) {
+        onChange(pin, value);
+      }
+      pinState[pin] = value;
+    });
+  }, 1000);
+});
+
+
 
 OTHER_PINS.forEach(function(pin) {
   gpio.setup(pin, gpio.DIR_HIGH);
