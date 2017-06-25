@@ -74,13 +74,12 @@ var writePulse = function(pin, duration) {
 
 var turnOn = function() {
   return new Promise((resolve, reject) => {
-    if (alarmOn) {
+    if (pinState(ALARM_STATE_PIN)) {
       reject('O alarme já está ligado!');
       return;
     }
     writePulse(CONTROL_PIN, PULSE_DURATION).then(() => {
-      alarmOn = true;
-      resolve('Alarme ligado');
+      resolve('Enviado sinal para ligar alarme');
     })
     .catch((err) => {
       reject('Error: ' + err);
