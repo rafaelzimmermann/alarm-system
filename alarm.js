@@ -1,6 +1,5 @@
 var gpio = require('rpi-gpio');
 
-var alarmOn = false;
 const CONTROL_PIN = 11;
 const LIGHT_PIN = 12;
 const SIREN_STATE_PIN = 26;
@@ -31,6 +30,8 @@ gpio.setup(SIREN_STATE_PIN, gpio.DIR_IN, function() {
     gpio.read(SIREN_STATE_PIN, function(err, value) {
       if (!err && !pinState.hasOwnProperty(SIREN_STATE_PIN) && pinState[SIREN_STATE_PIN] != value) {
         onChange(SIREN_STATE_PIN, value);
+      } else if (err) {
+        console.log("Error trying to read pin", SIREN_STATE_PIN, err);
       }
       pinState[SIREN_STATE_PIN] = value;
     });
@@ -40,10 +41,12 @@ gpio.setup(SIREN_STATE_PIN, gpio.DIR_IN, function() {
 gpio.setup(ALARM_STATE_PIN, gpio.DIR_IN, function() {
   setInterval(function() {
     gpio.read(ALARM_STATE_PIN, function(err, value) {
-      if (!err && !pinState.hasOwnProperty(SIREN_STATE_PIN) && pinState[SIREN_STATE_PIN] != value) {
-        onChange(SIREN_STATE_PIN, value);
+      if (!err && !pinState.hasOwnProperty(ALARM_STATE_PIN) && pinState[ALARM_STATE_PIN] != value) {
+        onChange(ALARM_STATE_PIN, value);
+      } else if (err) {
+        console.log("Error trying to read pin", ALARM_STATE_PIN, err);
       }
-      pinState[SIREN_STATE_PIN] = value;
+      pinState[ALARM_STATE_PIN] = value;
     });
   }, 1000);
 });
@@ -87,13 +90,12 @@ var turnOn = function() {
 
 var turnOff = function() {
   return new Promise((resolve, reject) => {
-    if (!alarmOn) {
+    if (!pinState(ALARM_STATE_PIN)) {
       reject('O alarme já está desligado!');
       return;
     }
     writePulse(CONTROL_PIN, PULSE_DURATION).then(() => {
-      alarmOn = false;
-      resolve('Alarme desligado');
+      resolve('Enviado sinal para desligar alarme');
     })
     .catch((err) => {
       reject('Error: ' + err);
@@ -103,7 +105,7 @@ var turnOff = function() {
 
 var isOn = function() {
   return new Promise((resolve, reject) => {
-    resolve(alarmOn ? 'Alarme ligado' : 'Alarme desligado');
+    resolve(pinState(ALARM_STATE_PIN) ? 'Alarme ligado' : 'Alarme desligado');
   });
 };
 
@@ -134,10 +136,6 @@ var turnOffPin = function(rele) {
     }
   });
 };
-
-registerChangeHandler(ALARM_STATE_PIN, function(val) {
-  alarmOn = val;
-});
 
 module.exports = {
   turnOn: turnOn,
