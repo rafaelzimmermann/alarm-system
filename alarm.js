@@ -28,7 +28,7 @@ var onChange = function(pin, value) {
 gpio.setup(SIREN_STATE_PIN, gpio.DIR_IN, function() {
   setInterval(function() {
     gpio.read(SIREN_STATE_PIN, function(err, value) {
-      if (!err && !pinState.hasOwnProperty(SIREN_STATE_PIN) && pinState[SIREN_STATE_PIN] != value) {
+      if (!err && pinState.hasOwnProperty(SIREN_STATE_PIN) && pinState[SIREN_STATE_PIN] != value) {
         onChange(SIREN_STATE_PIN, value);
       } else if (err) {
         console.log("Error trying to read pin", SIREN_STATE_PIN, err);
@@ -41,7 +41,7 @@ gpio.setup(SIREN_STATE_PIN, gpio.DIR_IN, function() {
 gpio.setup(ALARM_STATE_PIN, gpio.DIR_IN, function() {
   setInterval(function() {
     gpio.read(ALARM_STATE_PIN, function(err, value) {
-      if (!err && !pinState.hasOwnProperty(ALARM_STATE_PIN) && pinState[ALARM_STATE_PIN] != value) {
+      if (!err && pinState.hasOwnProperty(ALARM_STATE_PIN) && pinState[ALARM_STATE_PIN] != value) {
         onChange(ALARM_STATE_PIN, value);
       } else if (err) {
         console.log("Error trying to read pin", ALARM_STATE_PIN, err);
