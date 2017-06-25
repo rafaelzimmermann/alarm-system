@@ -36,7 +36,7 @@ setInterval(function() {
         onChange(pin, value);
       }
       pinState[pin] = value;
-    }
+    });
   });
 }, 1000);
 
