@@ -29,10 +29,10 @@ var onChange = function(pin, value) {
 gpio.setup(SIREN_STATE_PIN, gpio.DIR_IN, function() {
   setInterval(function() {
     gpio.read(SIREN_STATE_PIN, function(err, value) {
-      if (!err && !pinState.hasOwnProperty(pin) && pinState[pin] != value) {
-        onChange(pin, value);
+      if (!err && !pinState.hasOwnProperty(SIREN_STATE_PIN) && pinState[SIREN_STATE_PIN] != value) {
+        onChange(SIREN_STATE_PIN, value);
       }
-      pinState[pin] = value;
+      pinState[SIREN_STATE_PIN] = value;
     });
   }, 1000);
 });
@@ -40,10 +40,10 @@ gpio.setup(SIREN_STATE_PIN, gpio.DIR_IN, function() {
 gpio.setup(ALARM_STATE_PIN, gpio.DIR_IN, function() {
   setInterval(function() {
     gpio.read(ALARM_STATE_PIN, function(err, value) {
-      if (!err && !pinState.hasOwnProperty(pin) && pinState[pin] != value) {
-        onChange(pin, value);
+      if (!err && !pinState.hasOwnProperty(SIREN_STATE_PIN) && pinState[SIREN_STATE_PIN] != value) {
+        onChange(SIREN_STATE_PIN, value);
       }
-      pinState[pin] = value;
+      pinState[SIREN_STATE_PIN] = value;
     });
   }, 1000);
 });
