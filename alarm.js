@@ -104,7 +104,13 @@ var turnOff = function() {
 
 var isOn = function() {
   return new Promise((resolve, reject) => {
-    resolve(pinState[ALARM_STATE_PIN] ? 'Alarme ligado' : 'Alarme desligado');
+    String msg = '';
+    msg += pinState[ALARM_STATE_PIN] ? 'Alarme ligado\n' : 'Alarme desligado\n';
+    msg += pinState[SIREN_STATE_PIN] ? 'Alarme está tocando\n': 'Alarme não está tocando\n'
+    RELE_POSITION.forEach(function(rele) {
+      msg += pinState.hasOwnProperty(rele) && pinState[rele] ? 'Relê ' + rele + ' está ligado\n' : '';
+    });
+    resolve(msg);
   });
 };
 
@@ -123,7 +129,10 @@ var turnOffLight = function() {
 var turnOnPin = function(rele) {
   return new Promise((resolve, reject) => {
     if (RELE_POSITION.indexOf(rele) >= 0) {
-      gpio.write(OTHER_PINS[RELE_POSITION.indexOf(rele)], LOW, resolve);
+      gpio.write(OTHER_PINS[RELE_POSITION.indexOf(rele)], LOW, function() {
+        pinState[rele] = true;
+        resolve();
+      });
     }
   });
 };
@@ -131,7 +140,10 @@ var turnOnPin = function(rele) {
 var turnOffPin = function(rele) {
   return new Promise((resolve, reject) => {
     if (RELE_POSITION.indexOf(rele) >= 0) {
-      gpio.write(OTHER_PINS[RELE_POSITION.indexOf(rele)], HIGH, resolve);
+      gpio.write(OTHER_PINS[RELE_POSITION.indexOf(rele)], HIGH,  function() {
+        pinState[rele] = false;
+        resolve();
+      });
     }
   });
 };
