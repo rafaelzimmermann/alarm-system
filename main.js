@@ -64,10 +64,22 @@ rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
         });
     } else if (command.startsWith('liga porta ')) {
       var rele = command.replace('liga porta ', '');
-      alarm.turnOnPin(rele);
+      alarm.turnOnPin(rele)
+           .then((msg) => {
+             rtm.sendMessage("A porta " + rele + " foi ativada", message.channel);
+           })
+           .catch((err) => {
+             rtm.sendMessage("Erro ao processar comando.", message.channel);
+           });
     } else if (command.startsWith('desliga porta ')) {
       var rele = command.replace('desliga porta ', '');
-      alarm.turnOffPin(rele);
+      alarm.turnOffPin(rele)
+           .then((msg) => {
+             rtm.sendMessage("A porta " + rele + " foi desativada", message.channel);
+           })
+           .catch((err) => {
+             rtm.sendMessage("Erro ao processar comando.", message.channel);
+           });
     }
   }
 });
