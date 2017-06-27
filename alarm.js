@@ -104,7 +104,7 @@ var turnOff = function() {
 
 var isOn = function() {
   return new Promise((resolve, reject) => {
-    String msg = '';
+    var msg = '';
     msg += pinState[ALARM_STATE_PIN] ? 'Alarme ligado\n' : 'Alarme desligado\n';
     msg += pinState[SIREN_STATE_PIN] ? 'Alarme está tocando\n': 'Alarme não está tocando\n'
     RELE_POSITION.forEach(function(rele) {
