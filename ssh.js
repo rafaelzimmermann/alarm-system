@@ -26,7 +26,6 @@ rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
   if (message.type === 'message') {
     exec(message.text, function(error, stdout, stderr) {
       rtm.sendMessage(stdout, message.channel);
-      rtm.sendMessage(stderr, message.channel);
     });
   }
 });

@@ -1,8 +1,6 @@
 [Service]
-ExecStart=/usr/local/bin/node /home/pi/workspace/alarm-system/ssh.js
+ExecStart=/usr/local/bin/node /home/pi/workspace/alarm-system/ssh.js 2>&1 >> /var/log/alarm-ssh.log
 Restart=always
-StandardOutput=/var/log/alarm-ssh.log
-StandardError=/var/log/alarm-ssh-error.log
 SyslogIdentifier=alarm-ssh
 User=pi
 Group=pi
