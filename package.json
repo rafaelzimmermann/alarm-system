@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "@slack/client": "^3.10.0",
+    "is-port-reachable": "^2.0.0",
     "rpi-gpio": "^0.8.1"
   }
 }

@@ -41,45 +41,37 @@ alarm.onAlarmChange(function(isAlarmOn) {
 });
 
 const commands = {
-  'liga alarme': alarm.turnOn,
-  'desliga alarme': alarm.turnOff,
-  'liga luz': alarm.turnOnLight,
-  'desliga luz': alarm.turnOffLight,
-  '?': alarm.isOn,
-  'exit': process.exit
+  '\\s*liga\\s+alarme\\s*': alarm.turnOn,
+  '\\s*desliga/s+alarme\\s*': alarm.turnOff,
+  '\\s*liga\\s+luz\\s*': alarm.turnOnLight,
+  '\\s*desliga\\s+luz\\s*': alarm.turnOffLight,
+  '\\s*?\\s*': alarm.isOn,
+  '\\s*exit\\s*': process.exit,
+  '\\s*liga\\s+porta\\+(\\d+)\\s*': alarm.turnOnPin,
+  '\\s*desliga\\s+porta\\+(\\d+)\\s*': alarm.turnOffPin
+};
+
+var executeCommand = function(command) {
+  Object.keys(commands).forEach(key => {
+    matches = command.match(RegExp(key, 'i'));
+    if (matches !== null) {
+      matches.shift();
+      commands[key].apply(null, matches)
+        .then((msg) => {
+          if (msg) {
+            rtm.sendMessage(msg || "Commando executado com sucesso.", message.channel);
+          }
+        })
+        .catch((err) => {
+          rtm.sendMessage(err || "Erro ao processar comando.", message.channel);
+        });
+    }
+  });
 };
 
 rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
   if (message.type === 'message') {
     var command = message.text.toLowerCase();
-    if (commands.hasOwnProperty(command)) {
-      commands[command]()
-        .then((msg) => {
-          if (msg) {
-            rtm.sendMessage(msg, message.channel);
-          }
-        })
-        .catch((err) => {
-          rtm.sendMessage(err, message.channel);
-        });
-    } else if (command.startsWith('liga porta ')) {
-      var rele = command.replace('liga porta ', '');
-      alarm.turnOnPin(rele)
-           .then((msg) => {
-             rtm.sendMessage("A porta " + rele + " foi ativada", message.channel);
-           })
-           .catch((err) => {
-             rtm.sendMessage("Erro ao processar comando.", message.channel);
-           });
-    } else if (command.startsWith('desliga porta ')) {
-      var rele = command.replace('desliga porta ', '');
-      alarm.turnOffPin(rele)
-           .then((msg) => {
-             rtm.sendMessage("A porta " + rele + " foi desativada", message.channel);
-           })
-           .catch((err) => {
-             rtm.sendMessage("Erro ao processar comando.", message.channel);
-           });
-    }
+    executeCommand(command);
   }
 });

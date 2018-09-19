@@ -131,7 +131,7 @@ var turnOnPin = function(rele) {
     if (RELE_POSITION.indexOf(rele) >= 0) {
       gpio.write(OTHER_PINS[RELE_POSITION.indexOf(rele)], LOW, function() {
         pinState[rele] = true;
-        resolve();
+        resolve("A porta " + rele + " foi ativada");
       });
     }
   });
@@ -142,7 +142,7 @@ var turnOffPin = function(rele) {
     if (RELE_POSITION.indexOf(rele) >= 0) {
       gpio.write(OTHER_PINS[RELE_POSITION.indexOf(rele)], HIGH,  function() {
         pinState[rele] = false;
-        resolve();
+        resolve("A porta " + rele + " foi desativada");
       });
     }
   });
