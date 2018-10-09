@@ -58,10 +58,13 @@ const commands = {
   '\\s*verifica\\s+([^\\s]+)\\s+(\\d+)\\s*': network.checkPort
 };
 
-var executeCommand = function(command) {
+var executeCommand = function(message) {
+  var command = message.text.toLowerCase();
+  var commandFound = false;
   Object.keys(commands).forEach(key => {
     matches = command.match(RegExp(key, 'i'));
     if (matches !== null) {
+      commandFound = true;
       matches.shift();
       commands[key].apply(null, matches)
         .then((msg) => {
@@ -72,15 +75,15 @@ var executeCommand = function(command) {
         .catch((err) => {
           rtm.sendMessage(err || "Erro ao processar comando.", message.channel);
         });
-    } else {
-      rtm.sendMessage("Commando nao cadastrado:" + command);
     }
   });
+  if (!commandFound) {
+    rtm.sendMessage("Commando desconhecido:" + command, message.channel);
+  }
 };
 
 rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
   if (message.type === 'message') {
-    var command = message.text.toLowerCase();
-    executeCommand(command);
+    executeCommand(message);
   }
 });
