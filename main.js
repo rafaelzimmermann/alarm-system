@@ -53,6 +53,43 @@ var checkPort = function(host, port) {
   });
 }
 
+var scheduledCommands = [];
+var scheduleCommand = function(date, command) {
+  console.log(date, command)
+  return new Promise((resolve, reject) => {
+    var executAt = moment(date, "YYYYMMDDThhmm");
+    var diff = executAt.diff(new moment());
+    var timeout = setTimeout(executeCommand, diff, command);
+    scheduledCommands.push({
+      "command": command,
+      "date": date,
+      "timeout": timeout
+    });
+    resolve("Commando agendado");
+  });
+}
+
+var listScheduledCommands = function() {
+  return new Promise((resolve, reject) => {
+    var msg = "";
+    var index = 0;
+    scheduledCommands.forEach(item => {
+      msg +=  index + ":" + item.date + ":" + item.command + "\n";
+      index++;
+    });
+    resolve(msg);
+  });
+}
+
+var cancelScheduledCommand = function(index) {
+  return new Promise((resolve, reject) => {
+    var item = scheduledCommands[parseInt(index)];
+    clearTimeout(item.timeout);
+    scheduledCommands.splice(index, 1);
+    resolve("Agendamento cancelado")
+  });
+}
+
 var shutdown = function() {
   rtm.sendMessage(":wave: Tchau!", alarmStatusChannel);
   process.exit();
@@ -67,7 +104,10 @@ const commands = {
   '^\\s*exit\\s*': shutdown,
   '^\\s*liga\\s+porta\\s+(\\d+)\\s*': alarm.turnOnPin,
   '^\\s*desliga\\s+porta\\s+(\\d+)\\s*': alarm.turnOffPin,
-  '^\\s*verifica\\s+([^\\s]+)\\s+(\\d+)\\s*': checkPort
+  '^\\s*verifica\\s+([^\\s]+)\\s+(\\d+)\\s*': checkPort,
+  '^\\s*agenda\\s+(\\d\\d\\d\\d\\d\\d\\d\\dT\\d\\d\\d\\d)\\s+(.*)': scheduleCommand,
+  '^\\s*agenda\\s+ls\\s*': listScheduledCommands,
+  '^\\s*agenda\\s+rm\\s+(\\d+)\\s*': cancelScheduledCommand
 };
 
 var executeCommand = function(message) {
