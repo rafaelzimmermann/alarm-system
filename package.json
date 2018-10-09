@@ -12,6 +12,7 @@
     "@slack/client": "^3.10.0",
     "is-port-reachable": "^2.0.0",
     "moment": "^2.22.2",
-    "rpi-gpio": "^0.8.1"
+    "rpi-gpio": "^0.8.1",
+    "speedtest-net": "^1.4.3"
   }
 }

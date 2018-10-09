@@ -1,4 +1,5 @@
 var moment = require('moment');
+var speedTest = require('speedtest-net');
 var RtmClient = require('@slack/client').RtmClient;
 var MemoryDataStore = require('@slack/client').MemoryDataStore;
 var CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS;
@@ -112,6 +113,20 @@ var cancelScheduledCommand = function(index) {
   });
 }
 
+var execSpeedTest = function() {
+  return new Promise((resolve, reject) => {
+    var test = speedTest({maxTime: 5000});
+
+    test.on('data', data => {
+      resolve(data);
+    });
+
+    test.on('error', err => {
+      reject(err);
+    });
+  });
+}
+
 var shutdown = function() {
   rtm.sendMessage(":wave: Tchau!", alarmStatusChannel);
   process.exit();
@@ -129,7 +144,8 @@ const commands = {
   '^\\s*verifica\\s+([^\\s]+)\\s+(\\d+)\\s*': checkPort,
   '^\\s*agenda\\s+(\\d\\d\\d\\d\\d\\d\\d\\dT\\d\\d\\d\\d)\\s+(.*)': scheduleCommand,
   '^\\s*agenda\\s+ls\\s*': listScheduledCommands,
-  '^\\s*agenda\\s+rm\\s+(\\d+)\\s*': cancelScheduledCommand
+  '^\\s*agenda\\s+rm\\s+(\\d+)\\s*': cancelScheduledCommand,
+  '^\\s*speedtest\\s*': execSpeedTest
 };
 
 var executeCommand = function(text, channel) {
