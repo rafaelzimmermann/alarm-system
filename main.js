@@ -67,7 +67,10 @@ var scheduleCommand = function(date, command) {
       return;
     }
 
-    var timeout = setTimeout(executeCommand, diff, command, alarmStatusChannel);
+    var timeout = setTimeout(() => {
+      rtm.sendMessage("Executando commando agendado: " + command, alarmStatusChannel);
+      executeCommand(command, alarmStatusChannel);
+    }, diff);
     var item = {
       "command": command,
       "date": date,
