@@ -41,13 +41,18 @@ alarm.onAlarmChange(function(isAlarmOn) {
   }
 });
 
+var shutdown = function() {
+  rtm.sendMessage(":wave: Tchau!");
+  process.exit();
+}
+
 const commands = {
   '\\s*liga\\s+alarme\\s*': alarm.turnOn,
   '\\s*desliga/s+alarme\\s*': alarm.turnOff,
   '\\s*liga\\s+luz\\s*': alarm.turnOnLight,
   '\\s*desliga\\s+luz\\s*': alarm.turnOffLight,
   '\\s*\\?\\s*': alarm.isOn,
-  '\\s*exit\\s*': process.exit,
+  '\\s*exit\\s*': shutdown,
   '\\s*liga\\s+porta\\+(\\d+)\\s*': alarm.turnOnPin,
   '\\s*desliga\\s+porta\\+(\\d+)\\s*': alarm.turnOffPin,
   '\\s*verifica\\s+([^\\s]+)\\s+(\\d+)\\s*': network.checkPort
