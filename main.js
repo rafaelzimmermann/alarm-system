@@ -71,7 +71,7 @@ var scheduleCommand = function(date, command) {
 
 var listScheduledCommands = function() {
   return new Promise((resolve, reject) => {
-    var msg = "";
+    var msg = "Commandos agendados:\n";
     var index = 0;
     scheduledCommands.forEach(item => {
       msg +=  index + ":" + item.date + ":" + item.command + "\n";
