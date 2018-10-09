@@ -120,7 +120,9 @@ var execSpeedTest = function() {
     test.on('data', data => {
       var msg = "Resultado do teste de velocidade:\n"
       Object.keys(data.speeds).forEach(key => {
-        msg += key + ": "+ data.speeds[key] + "\n";
+        if (key === 'download' || key === 'upload') {
+          msg += key + ": "+ (data.speeds[key] * 125).toFixed(2) + "\n";
+        }
       })
       resolve(msg);
     });
