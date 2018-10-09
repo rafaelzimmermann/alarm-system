@@ -118,7 +118,11 @@ var execSpeedTest = function() {
     var test = speedTest({maxTime: 5000});
 
     test.on('data', data => {
-      resolve(data);
+      var msg = "Resultado do teste de velocidade:\n"
+      Object.keys(data.speeds).forEach(key => {
+        msg += key + ": "+ data.speeds[key] + "\n";
+      })
+      resolve(msg);
     });
 
     test.on('error', err => {
