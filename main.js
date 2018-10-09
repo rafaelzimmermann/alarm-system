@@ -60,17 +60,28 @@ var scheduleCommand = function(date, command) {
     var executAt = moment(date, "YYYYMMDDThhmm");
     var diff = executAt.diff(new moment());
     var timeout = setTimeout(executeCommand, diff, command);
-    scheduledCommands.push({
+    var item = {
       "command": command,
       "date": date,
       "timeout": timeout
-    });
+    };
+    scheduledCommands.push(item);
+    setTimeout(function() {
+      var index = scheduledCommands.indexOf(item);
+      if (index >= 0) {
+        scheduledCommands.splice(index, 1);
+      }
+    }, diff)
     resolve("Commando agendado");
   });
 }
 
 var listScheduledCommands = function() {
   return new Promise((resolve, reject) => {
+    if (scheduledCommands.length == 0) {
+      resolve("Nada agendado");
+      return;
+    }
     var msg = "Commandos agendados:\n";
     var index = 0;
     scheduledCommands.forEach(item => {
