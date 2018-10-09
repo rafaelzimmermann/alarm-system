@@ -59,7 +59,7 @@ var scheduleCommand = function(date, command) {
   return new Promise((resolve, reject) => {
     var executAt = moment(date, "YYYYMMDDThhmm");
     var diff = executAt.diff(new moment());
-    var timeout = setTimeout(executeCommand, diff, command);
+    var timeout = setTimeout(executeCommand, diff, command, alarmStatusChannel);
     var item = {
       "command": command,
       "date": date,
@@ -121,8 +121,8 @@ const commands = {
   '^\\s*agenda\\s+rm\\s+(\\d+)\\s*': cancelScheduledCommand
 };
 
-var executeCommand = function(message) {
-  var command = message.text.toLowerCase();
+var executeCommand = function(text, channel) {
+  var command = text.toLowerCase();
   var commandFound = false;
   Object.keys(commands).forEach(key => {
     matches = command.match(RegExp(key, 'i'));
@@ -132,21 +132,21 @@ var executeCommand = function(message) {
       commands[key].apply(null, matches)
         .then((msg) => {
           if (msg) {
-            rtm.sendMessage(msg || "Commando executado com sucesso.", message.channel);
+            rtm.sendMessage(msg || "Commando executado com sucesso.", channel);
           }
         })
         .catch((err) => {
-          rtm.sendMessage(err || "Erro ao processar comando.", message.channel);
+          rtm.sendMessage(err || "Erro ao processar comando.", channel);
         });
     }
   });
   if (!commandFound) {
-    rtm.sendMessage("Commando desconhecido:" + command, message.channel);
+    rtm.sendMessage("Commando desconhecido:" + command, channel);
   }
 };
 
 rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
   if (message.type === 'message') {
-    executeCommand(message);
+    executeCommand(message.text, message.channel);
   }
 });
