@@ -133,6 +133,27 @@ var execSpeedTest = function() {
   });
 }
 
+var showHelp = function() {
+  return new Promise((resolve, reject) => {
+    var msg = "Comandos:";
+    msg += "liga alarme\n"
+    msg += "desliga alarme\n"
+    msg += "liga luz\n"
+    msg += "desliga luz\n"
+    msg += "?\n"
+    msg += "exit\n"
+    msg += "liga porta X\n"
+    msg += "desliga porta X\n"
+    msg += "verifica 192.168.0.1 80\n"
+    msg += "agenda YYYYMMDDThhmm COMANDO\n"
+    msg += "agenda ls\n"
+    msg += "agenda rm X\n"
+    msg += "speedtest\n"
+    msg += "help\n"
+    resolve(msg);
+  });
+}
+
 var shutdown = function() {
   rtm.sendMessage(":wave: Tchau!", alarmStatusChannel);
   process.exit();
@@ -151,7 +172,8 @@ const commands = {
   '^\\s*agenda\\s+(\\d\\d\\d\\d\\d\\d\\d\\dT\\d\\d\\d\\d)\\s+(.*)': scheduleCommand,
   '^\\s*agenda\\s+ls\\s*': listScheduledCommands,
   '^\\s*agenda\\s+rm\\s+(\\d+)\\s*': cancelScheduledCommand,
-  '^\\s*speedtest\\s*': execSpeedTest
+  '^\\s*speedtest\\s*': execSpeedTest,
+  '^\\s*help\\s*': showHelp
 };
 
 var executeCommand = function(text, channel) {
