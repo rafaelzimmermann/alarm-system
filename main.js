@@ -5,6 +5,7 @@ var RTM_EVENTS = require('@slack/client').RTM_EVENTS;
 
 const credentials = require('./credentials');
 var alarm = require('./alarm');
+var network = require('./network');
 var started = false;
 
 var bot_token = process.env.SLACK_BOT_TOKEN || credentials.clients.alarm;
@@ -48,7 +49,8 @@ const commands = {
   '\\s*?\\s*': alarm.isOn,
   '\\s*exit\\s*': process.exit,
   '\\s*liga\\s+porta\\+(\\d+)\\s*': alarm.turnOnPin,
-  '\\s*desliga\\s+porta\\+(\\d+)\\s*': alarm.turnOffPin
+  '\\s*desliga\\s+porta\\+(\\d+)\\s*': alarm.turnOffPin,
+  '\\s*verifica\\s+([^\\s]+)\\s+(\\d+)\\s*': network.checkPort
 };
 
 var executeCommand = function(command) {
