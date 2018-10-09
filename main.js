@@ -17,6 +17,8 @@ var rtm = new RtmClient(bot_token, {
 
 var alarmStatusChannel = credentials.channels.alarmStatus;
 
+const brazil_tz_diff = 3 * 60 * 60 1000;
+
 rtm.start();
 
 rtm.on(CLIENT_EVENTS.RTM.RTM_CONNECTION_OPENED, function() {
@@ -58,7 +60,13 @@ var scheduledCommands = [];
 var scheduleCommand = function(date, command) {
   return new Promise((resolve, reject) => {
     var executAt = moment(date, "YYYYMMDDThhmm");
-    var diff = executAt.diff(new moment());
+    var diff = executAt.diff(new moment()) + brazil_tz_diff;
+
+    if (diff <= 0) {
+      reject("Data invalida");
+      return;
+    }
+
     var timeout = setTimeout(executeCommand, diff, command, alarmStatusChannel);
     var item = {
       "command": command,
