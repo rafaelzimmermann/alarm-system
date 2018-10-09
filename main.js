@@ -67,6 +67,8 @@ var executeCommand = function(command) {
         .catch((err) => {
           rtm.sendMessage(err || "Erro ao processar comando.", message.channel);
         });
+    } else {
+      rtm.sendMessage("Commando nao cadastrado:" + command);
     }
   });
 };
