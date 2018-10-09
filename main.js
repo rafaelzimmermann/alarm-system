@@ -135,7 +135,7 @@ var execSpeedTest = function() {
 
 var showHelp = function() {
   return new Promise((resolve, reject) => {
-    var msg = "Comandos:";
+    var msg = "Comandos:\n";
     msg += "liga alarme\n"
     msg += "desliga alarme\n"
     msg += "liga luz\n"
