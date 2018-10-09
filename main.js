@@ -55,7 +55,6 @@ var checkPort = function(host, port) {
 
 var scheduledCommands = [];
 var scheduleCommand = function(date, command) {
-  console.log(date, command)
   return new Promise((resolve, reject) => {
     var executAt = moment(date, "YYYYMMDDThhmm");
     var diff = executAt.diff(new moment());
