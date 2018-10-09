@@ -17,7 +17,7 @@ var rtm = new RtmClient(bot_token, {
 
 var alarmStatusChannel = credentials.channels.alarmStatus;
 
-const brazil_tz_diff = 3 * 60 * 60 1000;
+const brazil_tz_diff = 3 * 60 * 60 * 1000;
 
 rtm.start();
 
