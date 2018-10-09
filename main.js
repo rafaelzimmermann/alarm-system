@@ -42,7 +42,7 @@ alarm.onAlarmChange(function(isAlarmOn) {
 });
 
 var shutdown = function() {
-  rtm.sendMessage(":wave: Tchau!");
+  rtm.sendMessage(":wave: Tchau!", alarmStatusChannel);
   process.exit();
 }
 
