@@ -46,7 +46,7 @@ const commands = {
   '\\s*desliga/s+alarme\\s*': alarm.turnOff,
   '\\s*liga\\s+luz\\s*': alarm.turnOnLight,
   '\\s*desliga\\s+luz\\s*': alarm.turnOffLight,
-  '\\s*?\\s*': alarm.isOn,
+  '\\s*\\?\\s*': alarm.isOn,
   '\\s*exit\\s*': process.exit,
   '\\s*liga\\s+porta\\+(\\d+)\\s*': alarm.turnOnPin,
   '\\s*desliga\\s+porta\\+(\\d+)\\s*': alarm.turnOffPin,
