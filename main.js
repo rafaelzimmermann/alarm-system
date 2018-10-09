@@ -41,6 +41,18 @@ alarm.onAlarmChange(function(isAlarmOn) {
   }
 });
 
+var checkPort = function(host, port) {
+  return new Promise((resolve, reject) => {
+    network.checkPort(host, port).then((isOpen) => {
+      if (isOpen) {
+        resolve("Porta está aberta");
+      } else {
+        resolve("Porta está fechada");
+      }
+    })
+  });
+}
+
 var shutdown = function() {
   rtm.sendMessage(":wave: Tchau!", alarmStatusChannel);
   process.exit();
@@ -55,7 +67,7 @@ const commands = {
   '\\s*exit\\s*': shutdown,
   '\\s*liga\\s+porta\\+(\\d+)\\s*': alarm.turnOnPin,
   '\\s*desliga\\s+porta\\+(\\d+)\\s*': alarm.turnOffPin,
-  '\\s*verifica\\s+([^\\s]+)\\s+(\\d+)\\s*': network.checkPort
+  '\\s*verifica\\s+([^\\s]+)\\s+(\\d+)\\s*': checkPort
 };
 
 var executeCommand = function(message) {
