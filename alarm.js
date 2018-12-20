@@ -25,17 +25,53 @@ var onChange = function(pin, value) {
   });
 };
 
+var readPinState = function(pin) {
+  return new Promise((resolve, reject) => {
+    gpio.read(SIREN_STATE_PIN, function(err, value) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(value);
+      }
+    });
+  });
+}
+
+var checkStateChange = function(pin, pinPreviousState) {
+  return new Promise((resolve, reject) => {
+    readPinState(SIREN_STATE_PIN)
+      .then(value => {
+        var valueChanged = pinState.hasOwnProperty(SIREN_STATE_PIN) && pinState[SIREN_STATE_PIN] !== value;
+        resolve(valueChanged);
+      })
+      .catch(reject);
+  });
+}
+
+var logReadPinError = function(err) {
+  console.log("Error trying to read pin", SIREN_STATE_PIN, err);
+}
+
 gpio.setup(SIREN_STATE_PIN, gpio.DIR_IN, function() {
   setInterval(function() {
-    gpio.read(SIREN_STATE_PIN, function(err, value) {
-      if (!err && pinState.hasOwnProperty(SIREN_STATE_PIN) && pinState[SIREN_STATE_PIN] != value) {
-        onChange(SIREN_STATE_PIN, value);
-      } else if (err) {
-        console.log("Error trying to read pin", SIREN_STATE_PIN, err);
-      }
-      pinState[SIREN_STATE_PIN] = value;
-    });
-  }, 1000);
+    checkStateChange(SIREN_STATE_PIN)
+      .then(changed => {
+        if (changed) {
+          setTimeout(function() {
+            readPinState(SIREN_STATE_PIN)
+              .then(value => {
+                if (pinState.hasOwnProperty(SIREN_STATE_PIN) && pinState[SIREN_STATE_PIN] != value) {
+                  onChange(SIREN_STATE_PIN, value);
+                  pinState[SIREN_STATE_PIN] = value;
+                }
+              })
+              .catch(logReadPinError);
+          }, 5000);
+        }
+      })
+      .catch(logReadPinError);
+
+  }, 10000);
 });
 
 gpio.setup(ALARM_STATE_PIN, gpio.DIR_IN, function() {
