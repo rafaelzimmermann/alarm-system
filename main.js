@@ -22,7 +22,7 @@ const brazil_tz_diff = 3 * 60 * 60 * 1000;
 
 var sendMessage = function(message, channel) {
   console.log(message, channel);
-  sendMessage(message, channel);
+  rtm.sendMessage(message, channel);
 }
 
 rtm.start();
