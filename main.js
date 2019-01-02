@@ -20,28 +20,33 @@ var alarmStatusChannel = credentials.channels.alarmStatus;
 
 const brazil_tz_diff = 3 * 60 * 60 * 1000;
 
+var sendMessage = function(message, channel) {
+  console.log(message, channel);
+  sendMessage(message, channel);
+}
+
 rtm.start();
 
 rtm.on(CLIENT_EVENTS.RTM.RTM_CONNECTION_OPENED, function() {
   if (!started) {
-    rtm.sendMessage('Olá! Estou de volta.', alarmStatusChannel);
+    sendMessage('Olá! Estou de volta.', alarmStatusChannel);
     started = true;
   }
 });
 
 alarm.onSirenStateChange(function(isSirenOn) {
   if (isSirenOn) {
-    rtm.sendMessage('@channel :rotating_light: Alarme está tocando!', alarmStatusChannel);
+    sendMessage('@channel :rotating_light: Alarme está tocando!', alarmStatusChannel);
   } else {
-    rtm.sendMessage('@channel :warning: Alarme não está mais tocando!', alarmStatusChannel);
+    sendMessage('@channel :warning: Alarme não está mais tocando!', alarmStatusChannel);
   }
 });
 
 alarm.onAlarmChange(function(isAlarmOn) {
   if (isAlarmOn) {
-    rtm.sendMessage('O Alarme foi ligado.', alarmStatusChannel);
+    sendMessage('O Alarme foi ligado.', alarmStatusChannel);
   } else {
-    rtm.sendMessage('O Alarme foi desligado.', alarmStatusChannel);
+    sendMessage('O Alarme foi desligado.', alarmStatusChannel);
   }
 });
 
@@ -69,7 +74,7 @@ var scheduleCommand = function(date, command) {
     }
 
     var timeout = setTimeout(() => {
-      rtm.sendMessage("Executando commando agendado: " + command, alarmStatusChannel);
+      sendMessage("Executando commando agendado: " + command, alarmStatusChannel);
       executeCommand(command, alarmStatusChannel);
     }, diff);
     var item = {
@@ -155,7 +160,7 @@ var showHelp = function() {
 }
 
 var shutdown = function() {
-  rtm.sendMessage(":wave: Tchau!", alarmStatusChannel);
+  sendMessage(":wave: Tchau!", alarmStatusChannel);
   process.exit();
 }
 
@@ -187,16 +192,16 @@ var executeCommand = function(text, channel) {
       commands[key].apply(null, matches)
         .then((msg) => {
           if (msg) {
-            rtm.sendMessage(msg || "Commando executado com sucesso.", channel);
+            sendMessage(msg || "Commando executado com sucesso.", channel);
           }
         })
         .catch((err) => {
-          rtm.sendMessage(err || "Erro ao processar comando.", channel);
+          sendMessage(err || "Erro ao processar comando.", channel);
         });
     }
   });
   if (!commandFound) {
-    rtm.sendMessage("Commando desconhecido:" + command, channel);
+    sendMessage("Commando desconhecido:" + command, channel);
   }
 };
 
