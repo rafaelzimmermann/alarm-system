@@ -37,7 +37,7 @@ var readPinState = function(pin) {
   });
 }
 
-var checkStateChange = function(pin, pinPreviousState) {
+var checkStateChange = function(pin) {
   return new Promise((resolve, reject) => {
     readPinState(SIREN_STATE_PIN)
       .then(value => {
@@ -57,12 +57,16 @@ gpio.setup(SIREN_STATE_PIN, gpio.DIR_IN, function() {
     checkStateChange(SIREN_STATE_PIN)
       .then(changed => {
         if (changed) {
+          console.log("Alarm status changed.")
           setTimeout(function() {
             readPinState(SIREN_STATE_PIN)
               .then(value => {
-                if (pinState.hasOwnProperty(SIREN_STATE_PIN) && pinState[SIREN_STATE_PIN] != value) {
+                if (pinState.hasOwnProperty(SIREN_STATE_PIN) && pinState[SIREN_STATE_PIN] !== value) {
+                  console.log("Alarm status change confirmed.");
                   onChange(SIREN_STATE_PIN, value);
                   pinState[SIREN_STATE_PIN] = value;
+                } else {
+                  console.log("Alarm status change not confirmed.");
                 }
               })
               .catch(logReadPinError);
