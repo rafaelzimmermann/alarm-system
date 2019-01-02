@@ -41,7 +41,7 @@ var checkStateChange = function(pin) {
   return new Promise((resolve, reject) => {
     readPinState(SIREN_STATE_PIN)
       .then(value => {
-        var valueChanged = pinState.hasOwnProperty(SIREN_STATE_PIN) && pinState[SIREN_STATE_PIN] !== value;
+        var valueChanged = !pinState.hasOwnProperty(SIREN_STATE_PIN) || pinState[SIREN_STATE_PIN] !== value;
         resolve(valueChanged);
       })
       .catch(reject);
