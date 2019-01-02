@@ -41,7 +41,10 @@ var checkStateChange = function(pin) {
   return new Promise((resolve, reject) => {
     readPinState(SIREN_STATE_PIN)
       .then(value => {
-        var valueChanged = !pinState.hasOwnProperty(SIREN_STATE_PIN) || pinState[SIREN_STATE_PIN] !== value;
+        if (!pinState.hasOwnProperty(SIREN_STATE_PIN)) {
+          pinState[SIREN_STATE_PIN] = value;
+        }
+        var valueChanged = pinState[SIREN_STATE_PIN] !== value;
         resolve(valueChanged);
       })
       .catch(reject);
@@ -61,7 +64,7 @@ gpio.setup(SIREN_STATE_PIN, gpio.DIR_IN, function() {
           setTimeout(function() {
             readPinState(SIREN_STATE_PIN)
               .then(value => {
-                if (pinState.hasOwnProperty(SIREN_STATE_PIN) && pinState[SIREN_STATE_PIN] !== value) {
+                if (pinState[SIREN_STATE_PIN] !== value) {
                   console.log("Alarm status change confirmed.");
                   onChange(SIREN_STATE_PIN, value);
                   pinState[SIREN_STATE_PIN] = value;
