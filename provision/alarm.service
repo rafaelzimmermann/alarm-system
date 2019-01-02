@@ -1,5 +1,7 @@
 [Service]
-ExecStart=/usr/local/bin/node /home/pi/workspace/alarm-system/main.js >> /var/log/alarm.log 2>&1
+ExecStart=/usr/local/bin/node /home/pi/workspace/alarm-system/main.js
+StandardOutput=/var/log/alarm.log
+StandardError=/var/log/alarm-error.log
 Restart=always
 SyslogIdentifier=alarm
 User=pi
