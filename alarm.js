@@ -5,6 +5,7 @@ const LIGHT_PIN = 12;
 const SIREN_STATE_PIN = 26;
 const ALARM_STATE_PIN = 24;
 const PULSE_DURATION = 1000;
+const PIN_CHECK_INTERVAL = 1000;
 const LOW = false;
 const HIGH = true;
 const OTHER_PINS = [13, 15, 16, 18, 22, 7];
@@ -19,9 +20,9 @@ var pinState = {};
 gpio.setup(CONTROL_PIN, gpio.DIR_HIGH);
 gpio.setup(LIGHT_PIN, gpio.DIR_HIGH);
 
-var onChange = function(pin, value) {
+var triggerChange = function(pin) {
   pinChangeHandlers[pin].forEach((handler) => {
-    handler.apply(null, [value]);
+    handler.apply(null, [pinState[pin]]);
   });
 };
 
@@ -37,64 +38,59 @@ var readPinState = function(pin) {
   });
 }
 
-var checkStateChange = function(pin) {
+var logReadPinError = function(err, pin) {
+  console.log("Error trying to read pin", pin, err);
+}
+
+var initializePinState = function(pin) {
   return new Promise((resolve, reject) => {
-    readPinState(SIREN_STATE_PIN)
+    readPinState(pin)
+      .then(value => { pinState[pin] = value; resolve(value);})
+      .catch(reject);
+  });
+}
+
+var updatePinState = function(pin) {
+  return new Promise((resolve, reject) => {
+    readPinState(pin)
       .then(value => {
-        if (!pinState.hasOwnProperty(SIREN_STATE_PIN)) {
-          pinState[SIREN_STATE_PIN] = value;
+        var valueChanged = pinState[pin] !== value;
+        if (valueChanged) {
+          setTimeout(() => {
+            readPinState(pin)
+              .then(secondValue => {
+                valueChanged = pinState[pin] !== secondValue;
+                resolve(valueChanged);
+              })
+              .catch(logReadPinError);
+          }, PIN_CHECK_INTERVAL / 2);
+        } else {
+          resolve(valueChanged);
         }
-        var valueChanged = pinState[SIREN_STATE_PIN] !== value;
-        resolve(valueChanged);
       })
       .catch(reject);
   });
 }
 
-var logReadPinError = function(err) {
-  console.log("Error trying to read pin", SIREN_STATE_PIN, err);
-}
-
 gpio.setup(SIREN_STATE_PIN, gpio.DIR_IN, function() {
-  setInterval(function() {
-    checkStateChange(SIREN_STATE_PIN)
-      .then(changed => {
-        if (changed) {
-          console.log("Alarm status changed.")
-          setTimeout(function() {
-            readPinState(SIREN_STATE_PIN)
-              .then(value => {
-                if (pinState[SIREN_STATE_PIN] !== value) {
-                  console.log("Alarm status change confirmed.");
-                  onChange(SIREN_STATE_PIN, value);
-                  pinState[SIREN_STATE_PIN] = value;
-                } else {
-                  console.log("Alarm status change not confirmed.");
-                }
-              })
-              .catch(logReadPinError);
-          }, 5000);
-        }
-      })
-      .catch(logReadPinError);
-
-  }, 10000);
+  initializePinState(SIREN_STATE_PIN).then(() => {
+    setInterval(function() {
+      updatePinState(SIREN_STATE_PIN)
+        .then(changed => { if (changed) { triggerChange(SIREN_STATE_PIN); }})
+        .catch((err) => { logReadPinError(err, SIREN_STATE_PIN)});
+    }, PIN_CHECK_INTERVAL);
+  });
 });
 
 gpio.setup(ALARM_STATE_PIN, gpio.DIR_IN, function() {
-  setInterval(function() {
-    gpio.read(ALARM_STATE_PIN, function(err, value) {
-      if (!err && pinState.hasOwnProperty(ALARM_STATE_PIN) && pinState[ALARM_STATE_PIN] != value) {
-        onChange(ALARM_STATE_PIN, value);
-      } else if (err) {
-        console.log("Error trying to read pin", ALARM_STATE_PIN, err);
-      }
-      pinState[ALARM_STATE_PIN] = value;
-    });
-  }, 1000);
+  initializePinState(ALARM_STATE_PIN).then(() => {
+    setInterval(function() {
+      updatePinState(ALARM_STATE_PIN)
+        .then(changed => { if (changed) { triggerChange(ALARM_STATE_PIN); }})
+        .catch((err) => { logReadPinError(err, ALARM_STATE_PIN)});
+    }, PIN_CHECK_INTERVAL);
+  });
 });
-
-
 
 OTHER_PINS.forEach(function(pin) {
   gpio.setup(pin, gpio.DIR_HIGH);
