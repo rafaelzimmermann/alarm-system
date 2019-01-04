@@ -28,7 +28,7 @@ var triggerChange = function(pin) {
 
 var readPinState = function(pin) {
   return new Promise((resolve, reject) => {
-    gpio.read(SIREN_STATE_PIN, function(err, value) {
+    gpio.read(pin, function(err, value) {
       if (err) {
         reject(err);
       } else {
@@ -74,7 +74,7 @@ var updatePinState = function(pin) {
 
 gpio.setup(SIREN_STATE_PIN, gpio.DIR_IN, function() {
   initializePinState(SIREN_STATE_PIN).then(() => {
-    setInterval(function() {
+    setInterval(() => {
       updatePinState(SIREN_STATE_PIN)
         .then(changed => { if (changed) { triggerChange(SIREN_STATE_PIN); }})
         .catch((err) => { logReadPinError(err, SIREN_STATE_PIN)});
