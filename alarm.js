@@ -87,7 +87,7 @@ gpio.setup(SIREN_STATE_PIN, gpio.DIR_IN, function() {
 
 gpio.setup(ALARM_STATE_PIN, gpio.DIR_IN, function() {
   initializePinState(ALARM_STATE_PIN).then(() => {
-    setInterval(function() {
+    setInterval(() => {
       updatePinState(ALARM_STATE_PIN)
         .then(changed => { if (changed) { triggerChange(ALARM_STATE_PIN); }})
         .catch((err) => { logReadPinError(err, ALARM_STATE_PIN)});
