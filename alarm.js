@@ -60,6 +60,9 @@ var updatePinState = function(pin) {
             readPinState(pin)
               .then(secondValue => {
                 valueChanged = pinState[pin] !== secondValue;
+                if (valueChanged) {
+                  pinState[pin] = secondValue;
+                }
                 resolve(valueChanged);
               })
               .catch(logReadPinError);
