@@ -6,6 +6,8 @@ var CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS;
 var RTM_EVENTS = require('@slack/client').RTM_EVENTS;
 var bot_token = process.env.SLACK_BOT_TOKEN || credentials.clients.ssh;
 var currentDirectory = '/tmp';
+var alarmStatusChannel = credentials.channels.alarmStatus;
+var dns = require('dns');
 
 var rtm = new RtmClient(bot_token, {
   logLevel: 'error',
@@ -26,6 +28,22 @@ rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
   if (message.type === 'message') {
     exec(message.text, function(error, stdout, stderr) {
       rtm.sendMessage(stdout, message.channel);
+      rtm.sendMessage(stderr, message.channel);
     });
   }
 });
+
+var isThereInternetConnection = function() {
+  dns.resolve('www.google.com', function(err) {
+    if (err) {
+      exec('reboot', function(error, stdout, stderr) {
+        console.log(error, stdout, stderr);
+        rtm.sendMessage(stdout, alarmStatusChannel);
+        rtm.sendMessage(stderr, alarmStatusChannel);
+      });
+    }
+  });
+};
+
+TWO_HOURS = 2 * 60 * 60 * 1000;
+setInterval(isThereInternetConnection, TWO_HOURS);
