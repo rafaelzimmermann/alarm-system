@@ -66,7 +66,7 @@ var updatePinState = function(pin) {
                 resolve(valueChanged);
               })
               .catch(logReadPinError);
-          }, PIN_CHECK_INTERVAL / 2);
+          }, PIN_CHECK_INTERVAL * 10);
         } else {
           resolve(valueChanged);
         }
