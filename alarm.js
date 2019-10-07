@@ -5,7 +5,7 @@ const LIGHT_PIN = 12;
 const SIREN_STATE_PIN = 26;
 const ALARM_STATE_PIN = 24;
 const PULSE_DURATION = 1000;
-const PIN_CHECK_INTERVAL = 1000;
+const PIN_CHECK_INTERVAL = 60000;
 const LOW = false;
 const HIGH = true;
 const OTHER_PINS = [13, 15, 16, 18, 22, 7];
@@ -50,29 +50,43 @@ var initializePinState = function(pin) {
   });
 }
 
-var updatePinState = function(pin) {
+var updatePinState = function(pin, results) {
+  var totalChecks = 10;
+  if (results == null) {
+    results = [];
+  }
+
+  var areAllValuesEqual = function(results) {
+    value = results[0];
+    for (var i = 1; i < results.length; i++) {
+      if (value !== results[i]) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+
   return new Promise((resolve, reject) => {
-    readPinState(pin)
-      .then(value => {
-        var valueChanged = pinState[pin] !== value;
-        if (valueChanged) {
-          setTimeout(() => {
-            readPinState(pin)
-              .then(secondValue => {
-                valueChanged = pinState[pin] !== secondValue;
-                if (valueChanged) {
-                  pinState[pin] = secondValue;
-                }
-                resolve(valueChanged);
-              })
-              .catch(logReadPinError);
-          }, PIN_CHECK_INTERVAL * 60);
-        } else {
-          resolve(valueChanged);
-        }
-      })
-      .catch(reject);
-  });
+    var interval = PIN_CHECK_INTERVAL / totalChecks;
+    for (var i = 0; i < totalChecks; i++) {
+      setTimeout(() => {
+        readPinState(pin).then(value => {
+          results.push(value);
+          if (results.length == totalChecks) {
+            var valueChanged = pinState[pin] !== value;
+            var updateValue = areAllValuesEqual(results) && valueChanged;
+            if (updateValue) {
+              pinState[pin] = value;
+            }
+            console.log(results, updateValue, areAllValuesEqual(results))
+            resolve(updateValue);
+          }
+        })
+      }, interval * i)
+
+    }
+  })
 }
 
 gpio.setup(SIREN_STATE_PIN, gpio.DIR_IN, function() {
