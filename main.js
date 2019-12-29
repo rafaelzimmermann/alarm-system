@@ -138,6 +138,13 @@ var execSpeedTest = function() {
   });
 }
 
+var reboot = function() {
+  var exec = require('child_process').exec;
+  exec('reboot', function(error, stdout, stderr) {
+    console.log(error, stdout, stderr);
+  });
+}
+
 var showHelp = function() {
   return new Promise((resolve, reject) => {
     var msg = "Comandos:\n";
@@ -155,6 +162,7 @@ var showHelp = function() {
     msg += "agenda rm X\n"
     msg += "speedtest\n"
     msg += "help\n"
+    msg += "reboot\n"
     resolve(msg);
   });
 }
@@ -178,7 +186,8 @@ const commands = {
   '^\\s*agenda\\s+ls\\s*': listScheduledCommands,
   '^\\s*agenda\\s+rm\\s+(\\d+)\\s*': cancelScheduledCommand,
   '^\\s*speedtest\\s*': execSpeedTest,
-  '^\\s*help\\s*': showHelp
+  '^\\s*help\\s*': showHelp,
+  '^\\s*reboot\\s*': reboot
 };
 
 var executeCommand = function(text, channel) {
