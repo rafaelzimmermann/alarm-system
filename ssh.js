@@ -1,4 +1,5 @@
 const credentials = require('./credentials')
+
 var exec = require('child_process').exec;
 var RtmClient = require('@slack/client').RtmClient;
 var MemoryDataStore = require('@slack/client').MemoryDataStore;
@@ -8,6 +9,7 @@ var bot_token = process.env.SLACK_BOT_TOKEN || credentials.clients.ssh;
 var currentDirectory = '/tmp';
 var alarmStatusChannel = credentials.channels.alarmStatus;
 var dns = require('dns');
+var network = require('./network')
 
 var rtm = new RtmClient(bot_token, {
   logLevel: 'error',
@@ -18,10 +20,12 @@ rtm.start();
 
 rtm.on(CLIENT_EVENTS.RTM.RTM_CONNECTION_OPENED, function() {
   var user = rtm.dataStore.getUserById(rtm.activeUserId);
-
   var team = rtm.dataStore.getTeamById(rtm.activeTeamId);
-
   console.log('Connected to ' + team.name + ' as ' + user.name);
+
+  if (credentials['channels'].hasOwnProperty('sshChannel')) {
+    rtm.sendMessage(JSON.stringify(network.describeNetworkInterfaces()), credentials['channels']['sshChannel'])
+  }
 });
 
 rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
