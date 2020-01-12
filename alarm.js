@@ -20,6 +20,8 @@ gpio.destroy();
 gpio.setup(CONTROL_PIN, gpio.DIR_HIGH);
 gpio.setup(LIGHT_PIN, gpio.DIR_HIGH);
 
+var justWrote = false;
+
 var triggerChange = function(pin) {
   pinChangeHandlers[pin].forEach((handler) => {
     handler.apply(null, [pinState[pin]]);
@@ -68,12 +70,17 @@ var updatePinState = function(pin, results) {
 
 
   return new Promise((resolve, reject) => {
-    var interval = PIN_CHECK_INTERVAL / totalChecks;
-    for (var i = 0; i < totalChecks; i++) {
+    var checks = totalChecks;
+    if (pin === ALARM_STATE_PIN && justWrote) {
+      justWrote = false;
+      checks = 3;
+    }
+    var interval = PIN_CHECK_INTERVAL / checks;
+    for (var i = 0; i < checks; i++) {
       setTimeout(() => {
         readPinState(pin).then(value => {
           results.push(value);
-          if (results.length == totalChecks) {
+          if (results.length == checks) {
             var valueChanged = pinState[pin] !== value;
             var updateValue = areAllValuesEqual(results) && valueChanged;
             if (updateValue) {
@@ -122,6 +129,7 @@ var writePulse = function(pin, duration) {
       gpio.write(pin, LOW, function() {
           setTimeout(function() {
             gpio.write(pin, HIGH);
+            justWrote = true;
             resolve();
           }, duration);
       });
