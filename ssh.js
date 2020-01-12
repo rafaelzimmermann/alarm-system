@@ -33,7 +33,7 @@ rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
     var httpAddressRegex = new RegExp(/<[^\|]+\|([^>]+)>/, "g");
     exec(message.text.replace(httpAddressRegex, "$1"), function(error, stdout, stderr) {
       if (stdout) {
-        rtm.sendMessage(stdout, message.channel);
+        rtm.sendMessage("`" + stdout + "`", message.channel);
       }
       if (stderr) {
         rtm.sendMessage(stderr, message.channel);
