@@ -27,8 +27,12 @@ rtm.on(CLIENT_EVENTS.RTM.RTM_CONNECTION_OPENED, function() {
 rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
   if (message.type === 'message') {
     exec(message.text, function(error, stdout, stderr) {
-      rtm.sendMessage(stdout, message.channel);
-      rtm.sendMessage(stderr, message.channel);
+      if (stdout) {
+        rtm.sendMessage(stdout, message.channel);
+      }
+      if (stderr) {
+        rtm.sendMessage(stderr, message.channel);
+      }
     });
   }
 });
@@ -38,8 +42,12 @@ var isThereInternetConnection = function() {
     if (err) {
       exec('reboot', function(error, stdout, stderr) {
         console.log(error, stdout, stderr);
-        rtm.sendMessage(stdout, alarmStatusChannel);
-        rtm.sendMessage(stderr, alarmStatusChannel);
+        if (stdout) {
+          rtm.sendMessage(stdout, alarmStatusChannel);
+        }
+        if (stderr) {
+          rtm.sendMessage(stderr, alarmStatusChannel);
+        }
       });
     }
   });
