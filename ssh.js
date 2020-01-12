@@ -42,12 +42,6 @@ var isThereInternetConnection = function() {
     if (err) {
       exec('reboot', function(error, stdout, stderr) {
         console.log(error, stdout, stderr);
-        if (stdout) {
-          rtm.sendMessage(stdout, alarmStatusChannel);
-        }
-        if (stderr) {
-          rtm.sendMessage(stderr, alarmStatusChannel);
-        }
       });
     }
   });
