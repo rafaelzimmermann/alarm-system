@@ -7,7 +7,7 @@ REMOTE=$(git rev-parse "$UPSTREAM")
 if [ $LOCAL = $REMOTE ]; then
     echo "Up-to-date"
 elif [ $LOCAL = $BASE ]; then
-    git pull
+    cd /home/pi/workspace/alarm-system; git pull
     service alarm-ssh restart
     service alarm restart
 fi
