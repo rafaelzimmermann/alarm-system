@@ -12,8 +12,5 @@ if [ $LOCAL = $REMOTE ]; then
     echo "Up-to-date"
 else
     git pull
-    service alarm-ssh stop
-    service alarm-ssh start
-    service alarm stop
-    service alarm start
+    reboot
 fi
