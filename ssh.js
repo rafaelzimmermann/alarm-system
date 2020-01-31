@@ -24,6 +24,7 @@ rtm.on(CLIENT_EVENTS.RTM.RTM_CONNECTION_OPENED, function() {
   console.log('Connected to ' + team.name + ' as ' + user.name);
 
   if (credentials['channels'].hasOwnProperty('sshChannel')) {
+    rtm.sendMessage("Estou de volta!", credentials['channels']['sshChannel'])
     rtm.sendMessage(JSON.stringify(network.describeNetworkInterfaces()), credentials['channels']['sshChannel'])
   }
 });
