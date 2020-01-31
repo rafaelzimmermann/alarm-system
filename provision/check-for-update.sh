@@ -12,5 +12,5 @@ if [ $LOCAL = $REMOTE ]; then
     echo "Up-to-date"
 else
     git pull
-    reboot
+    /sbin/reboot
 fi
