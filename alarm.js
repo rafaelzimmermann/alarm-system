@@ -5,7 +5,7 @@ const LIGHT_PIN = 12;
 const SIREN_STATE_PIN = 26;
 const ALARM_STATE_PIN = 24;
 const PULSE_DURATION = 1000;
-const PIN_CHECK_INTERVAL = 60000;
+const PIN_CHECK_INTERVAL = 10000;
 const LOW = false;
 const HIGH = true;
 const OTHER_PINS = [13, 15, 16, 18, 22, 7];
@@ -53,7 +53,7 @@ var initializePinState = function(pin) {
 }
 
 var updatePinState = function(pin, results) {
-  var totalChecks = 10;
+  var totalChecks = 2;
   if (results == null) {
     results = [];
   }
@@ -90,7 +90,7 @@ var updatePinState = function(pin, results) {
             resolve(updateValue);
           }
         })
-      }, interval * i)
+      }, interval)
 
     }
   })
