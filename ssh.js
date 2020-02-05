@@ -29,7 +29,7 @@ rtm.on(CLIENT_EVENTS.RTM.RTM_CONNECTION_OPENED, function() {
 });
 
 rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
-  if (message.type === 'message' && message.user !== rtm.dataStore.getUserById(rtm.activeUserId)) {
+  if (message.type === 'message' && message.user !== rtm.activeUserId) {
     exec(message.text, function(error, stdout, stderr) {
       if (stdout) {
         rtm.sendMessage(stdout, message.channel);
