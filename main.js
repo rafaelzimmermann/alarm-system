@@ -5,6 +5,7 @@ var MemoryDataStore = require('@slack/client').MemoryDataStore;
 var CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS;
 var RTM_EVENTS = require('@slack/client').RTM_EVENTS;
 
+
 const credentials = require('./credentials');
 var alarm = require('./alarm');
 var network = require('./network');
